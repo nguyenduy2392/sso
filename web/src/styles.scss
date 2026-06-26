@@ -1,0 +1,359 @@
+@import "../node_modules/bootstrap/scss/bootstrap";
+@import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
+
+// ── Split Layout ──
+.sso-page {
+  display: flex;
+  min-height: 100vh;
+}
+
+// ── Left: Showcase ──
+.sso-showcase {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  display: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('/assets/images/top-view-laptop-smartphone-arrangement.jpg') center / cover no-repeat;
+    filter: blur(4px);
+    transform: scale(1.05);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(30, 27, 75, 0.55) 0%, rgba(49, 46, 129, 0.45) 40%, rgba(67, 56, 202, 0.40) 100%);
+  }
+
+  @media (min-width: 992px) {
+    display: flex;
+  }
+}
+
+.sso-showcase-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px 56px;
+  width: 100%;
+}
+
+.sso-showcase-logo {
+  margin-bottom: 48px;
+}
+
+.sso-showcase-headline {
+  margin-bottom: 40px;
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.35;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+  }
+}
+
+// ── Product Cards ──
+.sso-products {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sso-product-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.sso-product-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  i {
+    font-size: 22px;
+    color: #fff;
+  }
+
+  &--blue {
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+  }
+
+  &--green {
+    background: linear-gradient(135deg, #10b981, #059669);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+  }
+}
+
+.sso-product-body {
+  flex: 1;
+  min-width: 0;
+
+  h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  p {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+}
+
+.sso-product-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+
+  span {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    i {
+      font-size: 11px;
+      color: #34d399;
+    }
+  }
+}
+
+.sso-product-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+
+  img {
+    width: 72px;
+    height: 72px;
+    border-radius: 10px;
+    background: #fff;
+    padding: 4px;
+    object-fit: contain;
+  }
+
+  span {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 4px;
+  }
+}
+
+// ── Background decorations ──
+.sso-showcase-decor {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.sso-decor-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+
+  &--1 {
+    width: 400px;
+    height: 400px;
+    top: -80px;
+    right: -100px;
+  }
+
+  &--2 {
+    width: 250px;
+    height: 250px;
+    bottom: -60px;
+    left: -50px;
+  }
+
+  &--3 {
+    width: 150px;
+    height: 150px;
+    top: 50%;
+    right: 15%;
+    background: rgba(99, 102, 241, 0.15);
+  }
+}
+
+// ── Right: Form side ──
+.sso-form-side {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  padding: 32px 24px;
+
+  @media (min-width: 992px) {
+    width: 520px;
+    min-width: 520px;
+    box-shadow: -8px 0 40px rgba(0, 0, 0, 0.06);
+  }
+}
+
+.sso-form-container {
+  width: 100%;
+  max-width: 340px;
+}
+
+// ── SSO Form Controls ──
+.sso-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 6px;
+  letter-spacing: 0.2px;
+}
+
+.sso-input-wrap {
+  display: flex;
+  align-items: center;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0 16px;
+  height: 48px;
+  transition: all 0.2s ease;
+  gap: 12px;
+
+  &:focus-within {
+    background: #fff;
+    border-color: #818cf8;
+    box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.12);
+  }
+
+  &:hover:not(:focus-within) {
+    border-color: #cbd5e1;
+    background: #f1f5f9;
+  }
+
+  &.sso-input-error {
+    border-color: #f87171;
+    background: #fef2f2;
+
+    &:focus-within {
+      box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.12);
+    }
+  }
+}
+
+.sso-input-icon {
+  font-size: 18px;
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+.sso-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: #1e293b;
+  height: 100%;
+  min-width: 0;
+
+  &::placeholder {
+    color: #cbd5e1;
+    font-weight: 300;
+  }
+}
+
+.sso-eye-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 17px;
+  flex-shrink: 0;
+  transition: color 0.15s;
+
+  &:hover {
+    color: #64748b;
+  }
+}
+
+.sso-error {
+  display: block;
+  font-size: 12px;
+  color: #ef4444;
+  margin-top: 6px;
+  padding-left: 2px;
+}
+
+.sso-btn-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+
+  &:hover:not(:disabled) {
+    opacity: 0.92;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+}

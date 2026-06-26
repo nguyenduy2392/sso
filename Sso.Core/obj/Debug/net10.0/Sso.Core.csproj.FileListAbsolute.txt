@@ -1,0 +1,12 @@
+/Users/duynguyen/projects/eco/sso/Sso.Core/bin/Debug/net10.0/Sso.Core.deps.json
+/Users/duynguyen/projects/eco/sso/Sso.Core/bin/Debug/net10.0/Sso.Core.dll
+/Users/duynguyen/projects/eco/sso/Sso.Core/bin/Debug/net10.0/Sso.Core.pdb
+/Users/duynguyen/projects/eco/sso/Sso.Core/obj/Debug/net10.0/Sso.Core.csproj.AssemblyReference.cache
+/Users/duynguyen/projects/eco/sso/Sso.Core/obj/Debug/net10.0/Sso.Core.GeneratedMSBuildEditorConfig.editorconfig
+/Users/duynguyen/projects/eco/sso/Sso.Core/obj/Debug/net10.0/Sso.Core.AssemblyInfoInputs.cache
+/Users/duynguyen/projects/eco/sso/Sso.Core/obj/Debug/net10.0/Sso.Core.AssemblyInfo.cs
+/Users/duynguyen/projects/eco/sso/Sso.Core/obj/Debug/net10.0/Sso.Core.csproj.CoreCompileInputs.cache
+/Users/duynguyen/projects/eco/sso/Sso.Core/obj/Debug/net10.0/Sso.Core.dll
+/Users/duynguyen/projects/eco/sso/Sso.Core/obj/Debug/net10.0/refint/Sso.Core.dll
+/Users/duynguyen/projects/eco/sso/Sso.Core/obj/Debug/net10.0/Sso.Core.pdb
+/Users/duynguyen/projects/eco/sso/Sso.Core/obj/Debug/net10.0/ref/Sso.Core.dll

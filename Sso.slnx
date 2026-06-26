@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Sso.Api/Sso.Api.csproj" />
+  <Project Path="Sso.Core/Sso.Core.csproj" />
+</Solution>

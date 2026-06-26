@@ -1,0 +1,83 @@
+<div class="text-start">
+  <h4 class="fw-bold mb-1" style="color: #1a1a2e;">Chào mừng trở lại</h4>
+  <p class="mb-4" style="color: #94a3b8; font-size: 14px;">Đăng nhập để tiếp tục sử dụng hệ thống</p>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="login()" class="text-start">
+  <div class="mb-4">
+    <label class="sso-label" for="tenantName">Định danh đơn vị</label>
+    <div class="sso-input-wrap" [class.sso-input-error]="submitted && f['tenantName'].errors">
+      <i class="bi bi-building sso-input-icon"></i>
+      <input
+        formControlName="tenantName"
+        type="text"
+        id="tenantName"
+        class="sso-input"
+        placeholder="HappyEcotech"
+        autocomplete="organization"
+      />
+    </div>
+    @if (submitted && f['tenantName'].errors) {
+      <span class="sso-error">Vui lòng nhập định danh đơn vị</span>
+    }
+  </div>
+
+  <div class="mb-4">
+    <label class="sso-label" for="userName">Tên đăng nhập</label>
+    <div class="sso-input-wrap" [class.sso-input-error]="submitted && f['userName'].errors">
+      <i class="bi bi-person sso-input-icon"></i>
+      <input
+        formControlName="userName"
+        type="text"
+        id="userName"
+        class="sso-input"
+        placeholder="admin"
+        autocomplete="username"
+      />
+    </div>
+    @if (submitted && f['userName'].errors) {
+      <span class="sso-error">Vui lòng nhập tên đăng nhập</span>
+    }
+  </div>
+
+  <div class="mb-4">
+    <label class="sso-label" for="password">Mật khẩu</label>
+    <div class="sso-input-wrap" [class.sso-input-error]="submitted && f['password'].errors">
+      <i class="bi bi-lock sso-input-icon"></i>
+      <input
+        formControlName="password"
+        [type]="showPassword ? 'text' : 'password'"
+        id="password"
+        class="sso-input"
+        placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"
+        autocomplete="current-password"
+      />
+      <button
+        type="button"
+        class="sso-eye-btn"
+        (click)="showPassword = !showPassword"
+        tabindex="-1"
+      >
+        <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+      </button>
+    </div>
+    @if (submitted && f['password'].errors) {
+      <span class="sso-error">Vui lòng nhập mật khẩu</span>
+    }
+  </div>
+
+  <button
+    class="sso-btn-submit"
+    type="submit"
+    [disabled]="loading"
+  >
+    @if (loading) {
+      <span class="spinner-border spinner-border-sm me-2"></span>
+    }
+    Đăng nhập
+  </button>
+
+  <p style="color: #b0b8c9; font-size: 12px; letter-spacing: 0.3px;" class="text-center mt-4 mb-0">
+    Hệ thống quản lý tập trung &mdash; SSO
+  </p>
+</form>

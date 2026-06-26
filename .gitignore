@@ -1,0 +1,31 @@
+# .NET
+**/bin/
+**/obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+*.DotSettings.user
+
+# Logs
+Logs/
+*.log
+
+# Data
+**/Data/
+
+# Node / Angular
+web/node_modules/
+web/dist/
+web/.angular/
+web/.vite/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+*.swo
