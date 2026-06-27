@@ -19,8 +19,7 @@ public class SsoDbContext(DbContextOptions<SsoDbContext> options) : DbContext(op
             .IsUnique();
 
         b.Entity<User>()
-            .HasIndex(u => u.UserName)
-            .IsUnique();
+            .HasIndex(u => u.UserName);
 
         b.Entity<Tenant>()
             .HasIndex(t => t.Name)

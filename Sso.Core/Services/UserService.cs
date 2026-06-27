@@ -31,13 +31,15 @@ public class UserService(SsoDbContext db, IConfiguration config) : IUserService
 
     public async Task<User> CreateAsync(RegisterRequest request)
     {
-        var existingUser = string.IsNullOrEmpty(request.TenantName)
-            ? await db.Users.FirstOrDefaultAsync(u => u.UserName == request.UserName)
-            : await GetByUserNameAndTenantAsync(request.UserName, request.TenantName);
+        // Check trùng chỉ theo tenant + username
+        if (!string.IsNullOrEmpty(request.TenantName))
+        {
+            var inTenant = await GetByUserNameAndTenantAsync(request.UserName, request.TenantName);
+            if (inTenant != null)
+                throw new InvalidOperationException($"UserName '{request.UserName}' already exists in tenant '{request.TenantName}'");
+        }
 
-        if (existingUser != null)
-            throw new InvalidOperationException($"UserName '{request.UserName}' already exists");
-
+        // Luôn tạo user mới (mỗi tenant có user riêng, dù cùng username)
         var user = new User
         {
             UserName = request.UserName,
@@ -51,14 +53,18 @@ public class UserService(SsoDbContext db, IConfiguration config) : IUserService
         db.Users.Add(user);
         await db.SaveChangesAsync();
 
+        // Tạo tenant nếu chưa có + link UserTenant
         if (!string.IsNullOrWhiteSpace(request.TenantName))
         {
             var tenant = await db.Tenants.FirstOrDefaultAsync(t => t.Name == request.TenantName);
-            if (tenant != null)
+            if (tenant == null)
             {
-                db.UserTenants.Add(new UserTenant { UserId = user.Id, TenantId = tenant.Id });
+                tenant = new Tenant { Name = request.TenantName };
+                db.Tenants.Add(tenant);
                 await db.SaveChangesAsync();
             }
+            db.UserTenants.Add(new UserTenant { UserId = user.Id, TenantId = tenant.Id });
+            await db.SaveChangesAsync();
         }
 
         return user;
