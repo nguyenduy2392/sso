@@ -1,13 +1,16 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Sso.Core.Data;
 using Sso.Core.DTOs;
 using Sso.Core.Entities;
+using Sso.Core.Helpers;
 using Sso.Core.Interfaces;
 
 namespace Sso.Core.Services;
 
-public class UserService(SsoDbContext db) : IUserService
+public class UserService(SsoDbContext db, IConfiguration config) : IUserService
 {
+    private readonly string _salt = config["PasswordSalt"] ?? "gcrfigzhwm";
     public Task<List<User>> GetAllAsync() =>
         db.Users.AsNoTracking().ToListAsync();
 
@@ -38,7 +41,7 @@ public class UserService(SsoDbContext db) : IUserService
         var user = new User
         {
             UserName = request.UserName,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+            PasswordHash = PasswordHelper.HashPassword(request.Password, _salt),
             Name = request.Name ?? string.Empty,
             Email = request.Email,
             Phone = request.Phone,
@@ -81,8 +84,92 @@ public class UserService(SsoDbContext db) : IUserService
         var user = await db.Users.FindAsync(id);
         if (user == null) return false;
 
-        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+        user.PasswordHash = PasswordHelper.HashPassword(newPassword, _salt);
         await db.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<SyncBatchResult> SyncBatchAsync(SyncBatchRequest request)
+    {
+        var tenant = await db.Tenants.FirstOrDefaultAsync(t => t.Name == request.TenantName);
+        if (tenant == null)
+        {
+            tenant = new Tenant { Name = request.TenantName };
+            db.Tenants.Add(tenant);
+            await db.SaveChangesAsync();
+        }
+
+        var result = new SyncBatchResult();
+
+        foreach (var item in request.Users)
+        {
+            var existing = await db.UserTenants
+                .Include(ut => ut.User)
+                .FirstOrDefaultAsync(ut =>
+                    ut.TenantId == tenant.Id &&
+                    ut.User.UserName == item.UserName);
+
+            if (existing != null)
+            {
+                // Update profile + password hash
+                existing.User.PasswordHash = item.PasswordHash;
+                if (!string.IsNullOrEmpty(item.Name)) existing.User.Name = item.Name;
+                if (!string.IsNullOrEmpty(item.Email)) existing.User.Email = item.Email;
+                if (!string.IsNullOrEmpty(item.Phone)) existing.User.Phone = item.Phone;
+                if (!string.IsNullOrEmpty(item.Avatar)) existing.User.Avatar = item.Avatar;
+                result.Updated++;
+                result.Items.Add(new SyncUserResultItem
+                {
+                    UserName = item.UserName,
+                    SsoUserId = existing.User.Id,
+                    Action = "updated"
+                });
+            }
+            else
+            {
+                // Check if username exists in another tenant
+                var userByName = await db.Users.FirstOrDefaultAsync(u => u.UserName == item.UserName);
+                if (userByName != null)
+                {
+                    // Same username different tenant — add UserTenant link
+                    userByName.PasswordHash = item.PasswordHash;
+                    db.UserTenants.Add(new UserTenant { UserId = userByName.Id, TenantId = tenant.Id });
+                    result.Updated++;
+                    result.Items.Add(new SyncUserResultItem
+                    {
+                        UserName = item.UserName,
+                        SsoUserId = userByName.Id,
+                        Action = "linked"
+                    });
+                }
+                else
+                {
+                    // Create new user
+                    var newUser = new User
+                    {
+                        UserName = item.UserName,
+                        PasswordHash = item.PasswordHash,
+                        Name = item.Name ?? string.Empty,
+                        Email = item.Email,
+                        Phone = item.Phone,
+                        Avatar = item.Avatar,
+                    };
+                    db.Users.Add(newUser);
+                    await db.SaveChangesAsync();
+
+                    db.UserTenants.Add(new UserTenant { UserId = newUser.Id, TenantId = tenant.Id });
+                    result.Created++;
+                    result.Items.Add(new SyncUserResultItem
+                    {
+                        UserName = item.UserName,
+                        SsoUserId = newUser.Id,
+                        Action = "created"
+                    });
+                }
+            }
+        }
+
+        await db.SaveChangesAsync();
+        return result;
     }
 }

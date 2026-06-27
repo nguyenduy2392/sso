@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Sso.Core.Data;
 using Sso.Core.DTOs;
 using Sso.Core.Entities;
@@ -8,8 +9,9 @@ using Sso.Core.Interfaces;
 
 namespace Sso.Core.Services;
 
-public class AuthService(SsoDbContext db, JwtHelper jwt) : IAuthService
+public class AuthService(SsoDbContext db, JwtHelper jwt, IConfiguration config) : IAuthService
 {
+    private readonly string _salt = config["PasswordSalt"] ?? "gcrfigzhwm";
     public async Task<LoginResponse> LoginAsync(LoginRequest request)
     {
         var tenant = await db.Tenants.FirstOrDefaultAsync(t => t.Name == request.TenantName && t.Status == Status.Active)
@@ -24,7 +26,7 @@ public class AuthService(SsoDbContext db, JwtHelper jwt) : IAuthService
                 ut.User.Status == Status.Active)
             ?? throw new UnauthorizedAccessException("Tên đăng nhập hoặc mật khẩu không đúng.");
 
-        if (!BCrypt.Net.BCrypt.Verify(request.Password, userTenant.User.PasswordHash))
+        if (!PasswordHelper.VerifyPassword(request.Password, userTenant.User.PasswordHash, _salt))
             throw new UnauthorizedAccessException("Tên đăng nhập hoặc mật khẩu không đúng.");
 
         return await IssueTokensAsync(userTenant.User, tenant);
