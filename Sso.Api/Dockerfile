@@ -10,7 +10,7 @@ RUN dotnet restore Sso.Api/Sso.Api.csproj
 COPY Sso.Api/ Sso.Api/
 COPY Sso.Core/ Sso.Core/
 
-RUN dotnet publish Sso.Api/Sso.Api.csproj -c Release -o /app/publish --no-restore
+RUN dotnet publish Sso.Api/Sso.Api.csproj -c Release -o /app/publish
 
 # RUNTIME STAGE
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
