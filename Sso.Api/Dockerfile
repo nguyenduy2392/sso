@@ -10,7 +10,7 @@ RUN dotnet restore Sso.Api/Sso.Api.csproj
 COPY . .
 
 WORKDIR /src/Sso.Api
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish -c Release -o /app/publish -p:EnableDefaultEmbeddedResourceItems=false
 
 # RUNTIME STAGE
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
