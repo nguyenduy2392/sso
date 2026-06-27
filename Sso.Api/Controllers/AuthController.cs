@@ -11,6 +11,19 @@ namespace Sso.Api.Controllers;
 [Route("auth")]
 public class AuthController(IAuthService authService, IConfiguration configuration) : ControllerBase
 {
+    /// <summary>
+    /// Browser GET /auth/login → redirect về FE page (giữ nguyên query string).
+    /// Xảy ra khi nginx route /auth/* tới BE nhưng /auth/login là FE Angular route.
+    /// </summary>
+    [AllowAnonymous]
+    [HttpGet("login")]
+    public IActionResult LoginPage()
+    {
+        var frontendUrl = configuration["FrontendUrl"]?.TrimEnd('/') ?? "http://localhost:4201";
+        var qs = Request.QueryString.HasValue ? Request.QueryString.Value : "";
+        return Redirect($"{frontendUrl}/auth/login{qs}");
+    }
+
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
