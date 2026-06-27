@@ -21,7 +21,7 @@ public class AuthController(IAuthService authService, IConfiguration configurati
     {
         var frontendUrl = configuration["FrontendUrl"]?.TrimEnd('/') ?? "http://localhost:4201";
         var qs = Request.QueryString.HasValue ? Request.QueryString.Value : "";
-        return Redirect($"{frontendUrl}/auth/login{qs}");
+        return Redirect($"{frontendUrl}/login{qs}");
     }
 
     [HttpPost("login")]

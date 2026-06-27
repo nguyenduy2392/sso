@@ -10,6 +10,11 @@ export const routes: Routes = [
     loadChildren: () => import('./views/auth/auth.routes').then((m) => m.AUTH_ROUTES),
   },
   {
+    path: 'login',
+    component: AuthLayout,
+    loadChildren: () => import('./views/auth/auth.routes').then((m) => m.AUTH_ROUTES),
+  },
+  {
     path: '',
     canActivate: [
       (_route: any, state: any) => {
