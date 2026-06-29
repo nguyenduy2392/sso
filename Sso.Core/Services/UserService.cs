@@ -133,24 +133,8 @@ public class UserService(SsoDbContext db, IConfiguration config) : IUserService
             }
             else
             {
-                // Check if username exists in another tenant
-                var userByName = await db.Users.FirstOrDefaultAsync(u => u.UserName == item.UserName);
-                if (userByName != null)
                 {
-                    // Same username different tenant — add UserTenant link
-                    userByName.PasswordHash = item.PasswordHash;
-                    db.UserTenants.Add(new UserTenant { UserId = userByName.Id, TenantId = tenant.Id });
-                    result.Updated++;
-                    result.Items.Add(new SyncUserResultItem
-                    {
-                        UserName = item.UserName,
-                        SsoUserId = userByName.Id,
-                        Action = "linked"
-                    });
-                }
-                else
-                {
-                    // Create new user
+                    // Luôn tạo user mới — cùng userName ở khác tenant là người khác nhau
                     var newUser = new User
                     {
                         UserName = item.UserName,
