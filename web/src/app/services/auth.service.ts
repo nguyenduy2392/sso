@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, switchMap, tap, throwError, of } from 'rxjs';
 import { MasterService } from './master.service';
-import { environment } from '../../environments/environment';
+import { EnvService } from './env.service';
 
 export interface LoginRequest {
   tenantName: string;
@@ -28,10 +28,10 @@ export interface StoredUser {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  constructor(private master: MasterService) {}
+  constructor(private master: MasterService, private env: EnvService) {}
 
   login(data: LoginRequest): Observable<LoginResponse> {
-    return this.master.post<LoginResponse>(`${environment.apiUrl}/auth/login`, data).pipe(
+    return this.master.post<LoginResponse>(`${this.env.apiUrl}/auth/login`, data).pipe(
       switchMap((res) => {
         if (!res?.accessToken) return throwError(() => ({ error: { message: 'Đăng nhập thất bại.' } }));
         return of(res);

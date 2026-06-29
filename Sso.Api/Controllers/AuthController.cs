@@ -11,6 +11,19 @@ namespace Sso.Api.Controllers;
 [Route("auth")]
 public class AuthController(IAuthService authService, IConfiguration configuration) : ControllerBase
 {
+    /// <summary>
+    /// Browser GET /auth/login → redirect về FE page (giữ nguyên query string).
+    /// Xảy ra khi nginx route /auth/* tới BE nhưng /auth/login là FE Angular route.
+    /// </summary>
+    [AllowAnonymous]
+    [HttpGet("login")]
+    public IActionResult LoginPage()
+    {
+        var frontendUrl = configuration["FrontendUrl"]?.TrimEnd('/') ?? "http://localhost:4201";
+        var qs = Request.QueryString.HasValue ? Request.QueryString.Value : "";
+        return Redirect($"{frontendUrl}/login{qs}");
+    }
+
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
@@ -74,6 +87,24 @@ public class AuthController(IAuthService authService, IConfiguration configurati
             ? returnUrl!
             : "/auth/login";
 
-        return Redirect(redirect);
+        // Lấy danh sách app logout URLs từ config
+        var appLogoutUrls = configuration.GetSection("AppLogoutUrls").Get<string[]>() ?? [];
+
+        if (appLogoutUrls.Length == 0)
+            return Redirect(redirect);
+
+        // Render page với hidden iframes để xoá token các app, rồi redirect
+        var iframes = string.Join("\n", appLogoutUrls.Select(u =>
+            $"<iframe src=\"{u}\" style=\"display:none\" width=\"0\" height=\"0\"></iframe>"));
+
+        var html = $@"<!DOCTYPE html>
+<html><head><title>Đăng xuất...</title></head>
+<body>
+<p>Đang đăng xuất...</p>
+{iframes}
+<script>setTimeout(function(){{ window.location.href = '{redirect}'; }}, 1000);</script>
+</body></html>";
+
+        return Content(html, "text/html");
     }
 }

@@ -25,8 +25,8 @@ public class OAuthController(IOAuthService oauthService, IConfiguration configur
         if (string.IsNullOrEmpty(sessionUserId) || !Guid.TryParse(sessionUserId, out var userId))
         {
             var frontendUrl = configuration["FrontendUrl"]?.TrimEnd('/') ?? "http://localhost:4201";
-            // returnUrl phải là absolute URL của BE để SSO FE redirect đúng chỗ sau login
-            var backendBase = $"{Request.Scheme}://{Request.Host}";
+            var scheme = Request.Headers["X-Forwarded-Proto"].FirstOrDefault() ?? Request.Scheme;
+            var backendBase = $"{scheme}://{Request.Host}";
             var authorizeUrl = $"{backendBase}/auth/authorize?client_id={client_id}&redirect_uri={Uri.EscapeDataString(redirect_uri)}&state={state}";
             var returnUrl = Uri.EscapeDataString(authorizeUrl);
             return Redirect($"{frontendUrl}/auth/login?returnUrl={returnUrl}");

@@ -11,4 +11,5 @@ public interface IUserService
     Task<User> CreateAsync(RegisterRequest request);
     Task<User?> UpdateAsync(Guid id, UpdateUserRequest request);
     Task<bool> ChangePasswordAsync(Guid id, string newPassword);
+    Task<SyncBatchResult> SyncBatchAsync(SyncBatchRequest request);
 }

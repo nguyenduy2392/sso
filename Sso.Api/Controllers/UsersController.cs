@@ -63,4 +63,16 @@ public class UsersController(IUserService userService) : ControllerBase
             ? NotFound(new { message = "User not found." })
             : Ok(new { user.Id, user.UserName, user.Name, user.Email, user.Phone, user.Avatar });
     }
+
+    /// <summary>
+    /// Sync batch users từ HRM tenant sang SSO.
+    /// Password hash copy trực tiếp (cùng PBKDF2 + cùng salt).
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("sync-batch")]
+    public async Task<IActionResult> SyncBatch([FromBody] SyncBatchRequest request)
+    {
+        var result = await userService.SyncBatchAsync(request);
+        return Ok(result);
+    }
 }

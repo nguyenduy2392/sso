@@ -1,0 +1,7 @@
+web/
+.git/
+.github/
+*.md
+.DS_Store
+**/bin/
+**/obj/
