@@ -98,7 +98,7 @@ public class AuthController(IAuthService authService, IConfiguration configurati
             $"<iframe src=\"{u}\" style=\"display:none\" width=\"0\" height=\"0\"></iframe>"));
 
         var html = $@"<!DOCTYPE html>
-<html><head><title>Đăng xuất...</title></head>
+<html><head><meta charset=""utf-8""><title>Đăng xuất...</title></head>
 <body>
 <p>Đang đăng xuất...</p>
 {iframes}
