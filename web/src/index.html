@@ -7,6 +7,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <script src="env.js"></script>
+  <script>
+    // SSO Single Sign-Out: iframe từ app khác gọi /sso-logout → xoá localStorage của panel này
+    if (window.location.pathname === '/sso-logout') {
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('user');
+      document.write('<p>Logged out</p>');
+      throw new Error('sso-logout');
+    }
+  </script>
 </head>
 <body>
   <app-root></app-root>
