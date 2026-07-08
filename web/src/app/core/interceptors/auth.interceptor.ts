@@ -8,11 +8,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
+  const isAuthEndpoint = /\/auth\/(login|refresh)$/.test(req.url);
+
   return next(req).pipe(
     catchError((err) => {
-      if (err.status === 401) {
+      if (err.status === 401 && !isAuthEndpoint) {
         authService.logout();
-        router.navigate(['/auth/login']);
+        router.navigate(['/auth/login'], { queryParams: { returnUrl: router.url } });
       }
       return throwError(() => err);
     })
