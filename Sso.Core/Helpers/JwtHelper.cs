@@ -15,7 +15,7 @@ public class JwtHelper(IConfiguration config)
         var secret = config["Jwt:Secret"] ?? throw new InvalidOperationException("Jwt:Secret is not configured");
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var expiresMinutes = int.TryParse(config["Jwt:AccessTokenMinutes"], out var m) ? m : 60;
+        var expiresSeconds = GetAccessTokenSeconds();
 
         var claims = new List<Claim>
         {
@@ -32,7 +32,7 @@ public class JwtHelper(IConfiguration config)
 
         var token = new JwtSecurityToken(
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(expiresMinutes),
+            expires: DateTime.UtcNow.AddSeconds(expiresSeconds),
             signingCredentials: creds);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
@@ -41,6 +41,12 @@ public class JwtHelper(IConfiguration config)
     public string GenerateRefreshToken() =>
         Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
-    public int AccessTokenExpiresIn =>
-        int.TryParse(config["Jwt:AccessTokenMinutes"], out var m) ? m * 60 : 3600;
+    public int AccessTokenExpiresIn => GetAccessTokenSeconds();
+
+    private int GetAccessTokenSeconds()
+    {
+        if (int.TryParse(config["Jwt:AccessTokenSeconds"], out var s) && s > 0) return s;
+        if (int.TryParse(config["Jwt:AccessTokenMinutes"], out var m) && m > 0) return m * 60;
+        return 3600;
+    }
 }
