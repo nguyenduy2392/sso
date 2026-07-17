@@ -64,6 +64,14 @@ public class UsersController(IUserService userService) : ControllerBase
             : Ok(new { user.Id, user.UserName, user.Name, user.Email, user.Phone, user.Avatar });
     }
 
+    [AllowAnonymous]
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var ok = await userService.DeleteAsync(id);
+        return ok ? Ok(new { message = "User deleted." }) : NotFound(new { message = "User not found." });
+    }
+
     /// <summary>
     /// Sync batch users từ HRM tenant sang SSO.
     /// Password hash copy trực tiếp (cùng PBKDF2 + cùng salt).

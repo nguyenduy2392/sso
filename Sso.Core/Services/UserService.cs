@@ -95,6 +95,15 @@ public class UserService(SsoDbContext db, IConfiguration config) : IUserService
         return true;
     }
 
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        var user = await db.Users.FindAsync(id);
+        if (user == null) return false;
+        user.Status = Enums.Status.Inactive;
+        await db.SaveChangesAsync();
+        return true;
+    }
+
     public async Task<SyncBatchResult> SyncBatchAsync(SyncBatchRequest request)
     {
         var tenant = await db.Tenants.FirstOrDefaultAsync(t => t.Name == request.TenantName);
