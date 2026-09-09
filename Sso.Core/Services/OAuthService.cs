@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Sso.Core.Data;
 using Sso.Core.DTOs;
 using Sso.Core.Entities;
+using Sso.Core.Enums;
 using Sso.Core.Helpers;
 using Sso.Core.Interfaces;
 
@@ -63,7 +64,7 @@ public class OAuthService(SsoDbContext db, JwtHelper jwt) : IOAuthService
 
         var userTenant = await db.UserTenants
             .Include(ut => ut.Tenant)
-            .FirstOrDefaultAsync(ut => ut.UserId == user.Id);
+            .FirstOrDefaultAsync(ut => ut.UserId == user.Id && ut.Status == Status.Active);
 
         var tenant = userTenant?.Tenant;
         var accessToken = jwt.GenerateAccessToken(user, tenant);
