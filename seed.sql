@@ -46,7 +46,7 @@ VALUES (
     NEWID(), 'mini-crm',
     '$2b$11$82q.xOjMDsIkozFdVsL8U.0EMROmho..AgdvFVfCie3bU3puLSWPu',
     N'Mini CRM App',
-    '["http://localhost:4200/sso-callback","https://minicrm.happyecotech.com/sso-callback"]',
+    '["http://localhost:4200/sso-callback","http://localhost:4205/sso-callback","https://crm.happyecotech.com/sso-callback","https://minicrm.happyecotech.com/sso-callback"]',
     1, GETUTCDATE(), NULL, NULL, NULL
 )
 
